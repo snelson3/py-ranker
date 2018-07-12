@@ -34,8 +34,8 @@ class CMD_UI(UI):
 # Avengers > Thor
 
 #TODO UNDO FUNCTIONALITY
-#TODO SPECIFIC NUMBER OF RATES
 #TODO ONLY RATE PAIRS NOT RATED BEFORE
+#TODO mode of choosing where x1 is always a thing with the minimum number of rates
 
 class DB:
     def __init__(self, name):
@@ -81,8 +81,8 @@ class Master:
         self.ui = self.makeUI(CMD_UI)
         self.db = self.makeDB(TextDB)
 
-    def rate(self):
-        while 1:
+    def rate(self, n=99999):
+        for _ in range(n):
             i = self.getRandomItems()
             x1 = i[0]
             x2 = i[1]
@@ -157,5 +157,7 @@ if len(sys.argv) > 2:
         if len(sys.argv) > 3 and sys.argv[3] == "ts":
             ranker = TSRanker()
         master.ui.printRank(ranker.rank(master.db.getResults()))
+    else:
+        master.rate(n=int(sys.argv[2]))
 else:
     master.rate()
