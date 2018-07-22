@@ -6,7 +6,6 @@ class TextDB(DB):
         DB.__init__(self, os.path.join(fn,"results"))
 
     def read(self):
-        print(self.name)
         if not os.path.isfile(self.name):
             print("New DB")
             return []

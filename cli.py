@@ -30,23 +30,36 @@ class CLI_UI(UI):
             return self.select_category()
         return self.availableCategories[int(x)]
 
-    def rank_2(self, x1, x2):
+    def rank_2_menu(self, x1, x2):
         print("##############################")
         print("#enter 1 or 2 or undo or back#")
         print("##############################")
         ans = input("{}\nor\n{}\n".format(x1["name"], x2["name"]))
         if ans == "-1":
             return -1
-        if ans == "u":
+        if ans == "u" or ans == "undo":
             return "undo"
         if ans in ["1", "2"]:
-            return [x1,x2][int(ans)-1]
+            return int(ans)-1
         print("Invalid input")
-        return self.rank_2(x1, x2)
+        return self.rank_2_menu(x1, x2)
 
     def printRank(self, ranks):
         for rank in ranks:
             print("{}: {}".format(rank[1], rank[0]))
+
+    def category_menu(self):
+        numRates = self.category.getNumRates()
+        totalRates = self.category.getTotalRates()
+        print("{}. {}% Complete ({} Rates Left)".format(self.category.name, int((numRates/totalRates)*100), totalRates-numRates))
+        options = ['rate', 'rank', 'config', 'view', 'back']
+        orange = [str(i) for i in range(len(options))]
+        for i in orange:
+            print("{}) {}".format(i, options[int(i)]))
+        action = input("What would you like to do? ")
+        if action not in orange:
+            return self.category_menu()
+        return options[int(action)]
 
 if __name__ == "__main__":
     ui = CLI_UI()

@@ -33,3 +33,5 @@ class TSRanker(Ranker):
             well = d[i]
             d[i] = round(env.expose(d[i]), 2)
         return d
+
+# rank class that does like bubble sort
