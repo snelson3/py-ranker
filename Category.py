@@ -1,4 +1,5 @@
 from TextDB import TextDB
+from Rankers import *
 import os, itertools
 import random
 
@@ -45,3 +46,9 @@ class Category:
             return 0
         self.db.add1(items.pop(r), items[0])
         return 0
+
+    def getAvailableRankers(self):
+        return AVAILABLE_RANKERS
+
+    def rankWith(self, alg):
+        return alg.findRanks(self.db.getResults())

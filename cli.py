@@ -35,7 +35,7 @@ class CLI_UI(UI):
         print("#enter 1 or 2 or undo or back#")
         print("##############################")
         ans = input("{}\nor\n{}\n".format(x1["name"], x2["name"]))
-        if ans == "-1":
+        if ans in ['b','back']:
             return -1
         if ans == "u" or ans == "undo":
             return "undo"
@@ -43,10 +43,6 @@ class CLI_UI(UI):
             return int(ans)-1
         print("Invalid input")
         return self.rank_2_menu(x1, x2)
-
-    def printRank(self, ranks):
-        for rank in ranks:
-            print("{}: {}".format(rank[1], rank[0]))
 
     def category_menu(self):
         numRates = self.category.getNumRates()
@@ -60,6 +56,26 @@ class CLI_UI(UI):
         if action not in orange:
             return self.category_menu()
         return options[int(action)]
+
+    def rank_items_menu(self):
+        algs = self.category.getAvailableRankers()
+        chosen_alg = algs[0]
+        while 1:
+            ranking = self.category.rankWith(chosen_alg)
+            ordered_names = sorted(ranking.keys(), key=lambda k: ranking[k])
+            print("{}:".format(chosen_alg.name))
+            for r in range(len(ordered_names)):
+                print("{}) {} ({})".format(len(ordered_names)-(r),ordered_names[r], ranking[ordered_names[r]]))
+            print("##############")
+            options = [str(i) for i in range(len(algs))]
+            for a in options:
+                print("{}) {}".format(a, algs[int(a)].name))
+            inp = input('Rank By which?\n')
+            if inp not in options:
+                return
+            print(inp)
+            print(algs[int(inp)])
+            chosen_alg = algs[int(inp)]
 
 if __name__ == "__main__":
     ui = CLI_UI()

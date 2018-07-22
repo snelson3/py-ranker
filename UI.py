@@ -17,22 +17,19 @@ class UI:
                     r = self._rank2()
                     if r < 0:
                         action = None
-                while action == 'rank':
-                    pass
                 while action == 'config':
                     pass
                 while action == 'view':
                     pass
-                if action == 'back':
+                if action == 'rank':
+                    self.rank_items_menu()
+                elif action == 'back':
                     self.category = None
 
     def _findCategories(self):
         return list(os.walk(DATA_PATH))[0][1]
 
     def _rank2(self):
-        # Get x1 x2 from the Category
-        # Show the menu
-        # Do the resulting action (letting undo work)
         items = self.category.getNewPair()
         r = self.rank_2_menu(items[0], items[1])
         if r == -1:
@@ -50,4 +47,7 @@ class UI:
 
     def category_menu(self):
         # Main menu for the category
+        pass
+
+    def rank_items_menu(self):
         pass

@@ -3,6 +3,7 @@ from collections import defaultdict
 class Ranker:
     # Eliminate dupes option
     def __init__(self):
+        self.name = 'Ranker'
         pass
 
     def rank(self, pairs):
@@ -13,6 +14,10 @@ class Ranker:
         pass
 
 class SimpleRanker(Ranker):
+    def __init__(self):
+        Ranker.__init__(self)
+        self.name = 'Simple'
+
     # Very simple 1 point every time something wins
     def findRanks(self, pairs):
         d = defaultdict(int)
@@ -22,6 +27,10 @@ class SimpleRanker(Ranker):
         return d
 
 class TSRanker(Ranker):
+    def __init__(self):
+        Ranker.__init__(self)
+        self.name = 'TrueSkill'
+
     # Use the True skill library to rank pairs
     def findRanks(self, pairs):
         from trueskill import TrueSkill, Rating
@@ -35,3 +44,6 @@ class TSRanker(Ranker):
         return d
 
 # rank class that does like bubble sort
+# rank class that forces no contradictions
+
+AVAILABLE_RANKERS = [TSRanker(), SimpleRanker()]
