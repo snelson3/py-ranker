@@ -1,5 +1,5 @@
 from DB import DB
-import os
+import os, itertools
 
 class TextDB(DB):
     def __init__(self, fn):
@@ -46,11 +46,21 @@ class TextDB(DB):
     def getLeastUsedPairs(self):
         rates = self.getResults()
         nrates = {}
-        for r in set(map(lambda r: tuple(sorted([r["winner"], r["loser"]])), rates)):
+        for r in list(map(lambda r: tuple(sorted([r["winner"], r["loser"]])), rates)):
             for x in r:
                 if x in nrates:
                     nrates[x] += 1
                 else:
                     nrates[x] = 1
+        min_rate = 99999999999999
+        second_min_rate = 9999999999
+        for r in nrates:
+            if nrates[r] < min_rate:
+                if min_rate < second_min_rate:
+                    second_min_rate = min_rate
+                min_rate = nrates[r]
+            if nrates[r] > min_rate and nrates[r] < second_min_rate:
+                second_min_rate = nrates[r]
         print(nrates)
-        return rates
+        y = [r for r in nrates if nrates[r] in [min_rate, second_min_rate]]
+        return set(itertools.combinations(y, 2))

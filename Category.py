@@ -43,16 +43,16 @@ class Category:
     def getTotalRates(self):
         return len(list(itertools.combinations(self.items,2)))
 
-    def getRandomItems(self, n=2):
-        combs = itertools.combinations([i["name"].strip() for i in self.items], n)
+    def getRandomPair(self):
+        combs = itertools.combinations([i["name"].strip() for i in self.items], 2)
 
         x = set(tuple(sorted(i)) for i in combs)
-        if "new_only" in self.config and self.config["new_only"]:
+        if "new_only" in self.config and self.config["new_only"].lower() == 'true':
             y = self.db.getUniqueRates()
             x = x.difference(y)
-        if "pick_least_picked" in self.config and self.config["pick_least_picked"]:
+        if "pick_least_picked" in self.config and self.config["pick_least_picked"].lower() == 'true':
             y = self.db.getLeastUsedPairs()
-            x = x.difference(y)
+            x = x.union(y)
         if len(x) < 1:
             return -1
         # TODO
@@ -65,7 +65,7 @@ class Category:
     def getNewPair(self):
         if len(self.undoStack) > 0:
             return self.undoStack.pop()
-        return self.getRandomItems()
+        return self.getRandomPair()
 
     def rate(self, items, r):
         if r == 'undo':
