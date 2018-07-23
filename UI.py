@@ -17,11 +17,11 @@ class UI:
                     r = self._rank2()
                     if r < 0:
                         action = None
-                while action == 'config':
-                    pass
-                while action == 'view':
-                    pass
-                if action == 'rank':
+                if action == 'config':
+                    self._setConfig()
+                elif action == 'view':
+                    self.view_items()
+                elif action == 'rank':
                     self.rank_items_menu()
                 elif action == 'back':
                     self.category = None
@@ -35,6 +35,33 @@ class UI:
         if r == -1:
             return -1
         return self.category.rate(items, r)
+
+    def _setConfig(self):
+        config = {
+            "duplicates": {
+                "type": ["count", "newest", "oldest"],
+                "value": None
+            },
+            "new_only": {
+                "type": bool,
+                "value": None
+            },
+            "pick_least_picked": {
+                "type": bool,
+                "value": None
+            }
+        }
+        if "duplicates" in self.category.config:
+            config["duplicates"]["value"] = self.category.config["duplicates"]
+        if "new_only" in self.category.config:
+            config["new_only"]["value"] = self.category.config["new_only"]
+        if "pick_least_picked" in self.category.config:
+            config["pick_least_picked"]["value"] = self.category.config["pick_least_picked"]
+        config = self.config_menu(config)
+        for k in config:
+            if config[k]["value"]:
+                self.category.config[k] = config[k]["value"]
+        self.category.saveConfig()
 
     def select_category(self):
         # Given availableCategories select one of the categories to look at
@@ -51,3 +78,10 @@ class UI:
 
     def rank_items_menu(self):
         pass
+
+    def view_items(self):
+        pass
+
+    def config_menu(self, schema, config):
+        pass
+

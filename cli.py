@@ -47,7 +47,7 @@ class CLI_UI(UI):
     def category_menu(self):
         numRates = self.category.getNumRates()
         totalRates = self.category.getTotalRates()
-        print("{}. {}% Complete ({} Rates Left)".format(self.category.name, int((numRates/totalRates)*100), totalRates-numRates))
+        print("{}. {}% Complete ({} Rates Left)".format(self.category.getName(), int((numRates/totalRates)*100), totalRates-numRates))
         options = ['rate', 'rank', 'config', 'view', 'back']
         orange = [str(i) for i in range(len(options))]
         for i in orange:
@@ -76,6 +76,29 @@ class CLI_UI(UI):
             print(inp)
             print(algs[int(inp)])
             chosen_alg = algs[int(inp)]
+
+    def config_menu(self, config):
+        while 1:
+            config_keys = list(config.keys())
+            options = [str(i) for i in range(len(config_keys))]
+            for i in options:
+                print("{}) {} ({})".format(i, config_keys[int(i)], config[config_keys[int(i)]]["value"]))
+            o = input("Pick option you want to modify, or exit\n")
+            if o in ['e', 'exit']:
+                return config
+            if o in options:
+                opt = config_keys[int(o)]
+                if config[opt]["type"] == bool:
+                    options = ["true", "false"]
+                else:
+                    options = config[opt]["type"]
+                n = input("Pick {}\n".format(",".join(options)))
+                if n in options:
+                    config[config_keys[int(o)]]["value"] = n
+
+    def view_items(self):
+        for item in sorted(map(lambda i: i['name'], self.category.items)):
+            print(item)
 
 if __name__ == "__main__":
     ui = CLI_UI()

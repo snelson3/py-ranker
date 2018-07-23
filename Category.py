@@ -9,11 +9,26 @@ class Category:
     def __init__(self, fn):
         if not os.path.isfile(os.path.join(fn, "list")):
             raise Exception("No Category list file!")
-        self.name = None # Get this from the config file
+        if not os.path.isfile(os.path.join(fn, "config")):
+            raise Exception("No Config File!")
         self.fn = fn
+        self.config = self.readConfig()
+        if not "name" in self.config.keys():
+            raise Exception("No Name Set!")
         self.items = self.getItems()
         self.db = MY_DB(self.fn)
         self.undoStack = []
+
+    def readConfig(self):
+        with open(os.path.join(self.fn, "config")) as f:
+            return {c.split('=')[0]:c.split('=')[1] for c in f.read().split('\n')}
+
+    def saveConfig(self):
+        with open(os.path.join(self.fn, "config"), "w") as f:
+            f.write("\n".join(["{}={}".format(i, self.config[i]) for i in self.config]))
+
+    def getName(self):
+        return self.config['name']
 
     def readCategory(self):
         return open(os.path.join(self.fn, "list")).read().split("\n")

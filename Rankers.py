@@ -43,6 +43,7 @@ class TSRanker(Ranker):
             d[i] = round(env.expose(d[i]), 2)
         return d
 
+
 # rank class that does like bubble sort
 # rank class that forces no contradictions
 
