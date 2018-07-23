@@ -66,4 +66,16 @@ class Category:
         return AVAILABLE_RANKERS
 
     def rankWith(self, alg):
-        return alg.findRanks(self.db.getResults())
+        results = self.db.getResults()
+        if "duplicates" in self.config and self.config["duplicates"] in ["oldest", "newest"]:
+            print("fukc")
+            new_results = []
+            unique_pairs = {}
+            ordered = results if self.config["duplicates"] == "newest" else results[::-1]
+            for p in range(len(ordered)):
+                pair = ordered[p]
+                unique_pairs[tuple(sorted([pair["winner"],pair["loser"]]))] = (pair, p)
+            for p in sorted(unique_pairs.keys(), key=lambda k: unique_pairs[k][1]):
+                new_results.append(unique_pairs[p][0])
+            results = new_results
+        return alg.findRanks(results)
