@@ -13,3 +13,6 @@ class DB:
 
     def getUniqueRates(self):
         pass
+
+    def getLeastUsedPairs(self):
+        pass

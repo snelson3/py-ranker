@@ -100,5 +100,8 @@ class CLI_UI(UI):
         for item in sorted(map(lambda i: i['name'], self.category.items)):
             print(item)
 
+    def displayError(self, s):
+        print(s)
+
 if __name__ == "__main__":
     ui = CLI_UI()

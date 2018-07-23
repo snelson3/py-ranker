@@ -16,7 +16,8 @@ class TextDB(DB):
         # This is inefficient
         with open(self.name, "r") as f:
             results = f.read().strip().split('\n')
-        assert len(results) > 0
+        if len(results) <= 0:
+            raise Exception("No Results to remove!")
         removed = results.pop()
         with open(self.name, "w") as f:
             f.write("\n".join(results))
@@ -24,14 +25,16 @@ class TextDB(DB):
         return [{"name":x.strip()} for x in removed.split(">")]
 
     def add1(self, winner, loser):
-        assert type(winner) == dict and "name" in winner
-        assert type(loser) == dict and "name" in loser
+        if type(winner) is not dict or "name" not in winner \
+            or type(loser) is not dict or "name" not in loser:
+                raise Exception("Bad winner/loser!")
         with open(self.name, "a") as f:
             f.write("{} > {}\n".format(winner["name"], loser["name"]))
 
     def getResults(self):
         def _parseLine(line):
-            assert ">" in line
+            if ">" not in line:
+                raise Exception("Malformed line in results: {}".format(line))
             res = line.split(">")
             return {"winner": res[0].strip(), "loser": res[1].strip()}
         return list(map(_parseLine, self.read()))
@@ -39,3 +42,15 @@ class TextDB(DB):
     def getUniqueRates(self):
         rates = self.getResults()
         return set(map(lambda r: tuple(sorted([r["winner"], r["loser"]])), rates))
+
+    def getLeastUsedPairs(self):
+        rates = self.getResults()
+        nrates = {}
+        for r in set(map(lambda r: tuple(sorted([r["winner"], r["loser"]])), rates)):
+            for x in r:
+                if x in nrates:
+                    nrates[x] += 1
+                else:
+                    nrates[x] = 1
+        print(nrates)
+        return rates

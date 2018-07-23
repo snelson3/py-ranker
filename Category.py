@@ -44,10 +44,23 @@ class Category:
         return len(list(itertools.combinations(self.items,2)))
 
     def getRandomItems(self, n=2):
-        # Inefficient
-        x = list(self.items)
+        combs = itertools.combinations([i["name"].strip() for i in self.items], n)
+
+        x = set(tuple(sorted(i)) for i in combs)
+        if "new_only" in self.config and self.config["new_only"]:
+            y = self.db.getUniqueRates()
+            x = x.difference(y)
+        if "pick_least_picked" in self.config and self.config["pick_least_picked"]:
+            y = self.db.getLeastUsedPairs()
+            x = x.difference(y)
+        if len(x) < 1:
+            return -1
+        # TODO
+        # I'm mucking with the state of an item object a bit to much, it's murky
+        # Either make it always a string, or an object if there is use there
+        x = [[{"name": i[0]}, {"name": i[1]}] for i in list(x)]
         random.shuffle(x)
-        return [x.pop(0) for i in range(n)]
+        return x.pop()
 
     def getNewPair(self):
         if len(self.undoStack) > 0:
@@ -68,7 +81,6 @@ class Category:
     def rankWith(self, alg):
         results = self.db.getResults()
         if "duplicates" in self.config and self.config["duplicates"] in ["oldest", "newest"]:
-            print("fukc")
             new_results = []
             unique_pairs = {}
             ordered = results if self.config["duplicates"] == "newest" else results[::-1]

@@ -31,6 +31,9 @@ class UI:
 
     def _rank2(self):
         items = self.category.getNewPair()
+        if items == -1:
+            self.displayError("No Pairs Available!")
+            return -1
         r = self.rank_2_menu(items[0], items[1])
         if r == -1:
             return -1
@@ -85,3 +88,5 @@ class UI:
     def config_menu(self, schema, config):
         pass
 
+    def displayError(self, s):
+        pass
